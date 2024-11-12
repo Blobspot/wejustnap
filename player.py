@@ -27,13 +27,12 @@ class Player():
     # assign tasks to the player
     # tasks: a list() of >= 1 Task objects
     def assign_tasks(self, tasks):
-        for i in tasks:
-            if type(tasks) == Task:
-                self.assign_tasks(tasks)
-            else:
-                raise ValueError("An object in the 'tasks' list is not a Task: " + type(i))
-        else:
+        if not isinstance(tasks, list):
             raise ValueError("Object passed to 'tasks' parameter must be a list with Task object(s)")
+        for i in tasks:
+            if not isinstance(i, Task):
+                raise ValueError("An object in the 'tasks' list is not a Task: " + str(type(i)))
+        self.__assigned_tasks.extend(tasks)
 
     # getters
     def get_assigned_tasks(self):
@@ -44,4 +43,3 @@ class Player():
     
     def get_effort_report(self):
         return self.__daily_effort_report
-    
