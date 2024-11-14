@@ -1,0 +1,93 @@
+import random
+from player import Player
+from task import Task
+
+# Step 1: Define 7 tasks with varying required efforts
+tasks = [
+    Task(required_effort=30),
+    Task(required_effort=30),
+    Task(required_effort=30),
+    Task(required_effort=30),
+    Task(required_effort=30),
+    Task(required_effort=30),
+    Task(required_effort=30)
+]
+
+# Step 2: Create 6 players with different effort allocations and skills
+players = [
+    Player(effort_allocation=5, skills={"developer": 1.0}),
+    Player(effort_allocation=4, skills={"developer": 1.0}),
+    Player(effort_allocation=6, skills={"developer": 1.0}),
+    Player(effort_allocation=3, skills={"developer": 1.0}),
+    Player(effort_allocation=7, skills={"developer": 1.0}),
+    Player(effort_allocation=5, skills={"developer": 1.0})
+]
+
+# Step 2: Assign tasks to players
+for player in players:
+    player.assign_tasks(tasks)
+
+# Step 3: Define functions to calculate metrics
+def calculate_social_welfare(tasks):
+    return sum(task.get_total_effort_contributed() for task in tasks)
+
+def centralized_outcome():
+    # Ideal setup: Maximizing social welfare and productivity.
+    ideal_SW = sum(task.required_effort for task in tasks)  # Assume ideal SW as sum of all efforts required
+    ideal_TH = ideal_SW  # Ideal productivity if all tasks are completed
+    return ideal_SW, ideal_TH
+
+# Step 4: Define self-organizing outcomes
+def self_organized_outcomes(num_simulations=10):
+    best_SW, worst_SW = 0, float('inf')
+    best_TH, worst_TH = 0, float('inf')
+
+    for _ in range(num_simulations):
+        # Reset task efforts for each simulation
+        for task in tasks:
+            task.effort_contributed = 0
+
+        # Run the self-organizing simulation over 14 rounds
+        for _ in range(14):
+            for player in players:
+                task = random.choice(player.get_assigned_tasks())
+                remaining_player_effort = player.get_remaining_effort()
+                if remaining_player_effort > 0:
+                    effort_to_add = random.randint(1, remaining_player_effort)
+                    task.add_effort(effort_to_add)
+
+        # Calculate metrics for this outcome
+        SW = calculate_social_welfare(tasks)
+        TH = sum(task.required_effort if task.is_complete() else 0 for task in tasks)
+
+        # Track best and worst outcomes
+        best_SW = max(best_SW, SW)
+        worst_SW = min(worst_SW, SW)
+        best_TH = max(best_TH, TH)
+        worst_TH = min(worst_TH, TH)
+
+    return best_SW, worst_SW, best_TH, worst_TH
+
+# Centralized outcomes
+ideal_SW, ideal_TH = centralized_outcome()
+
+# Self-organized outcomes
+best_SW, worst_SW, best_TH, worst_TH = self_organized_outcomes()
+
+# Step 5: Calculate Price of Stability (PoS) and Price of Anarchy (PoA)
+PoS_SW = ideal_SW / best_SW if best_SW != 0 else float('inf')
+PoA_SW = ideal_SW / worst_SW if worst_SW != 0 else float('inf')
+PoS_TH = ideal_TH / best_TH if best_TH != 0 else float('inf')
+PoA_TH = ideal_TH / worst_TH if worst_TH != 0 else float('inf')
+
+# Print Results
+print("Centralized Outcome - Social Welfare (SW):", ideal_SW)
+print("Centralized Outcome - Threshold Completed (TH):", ideal_TH)
+print("Self-Organized Best SW:", best_SW)
+print("Self-Organized Worst SW:", worst_SW)
+print("Self-Organized Best TH:", best_TH)
+print("Self-Organized Worst TH:", worst_TH)
+print("Price of Stability (SW):", PoS_SW)
+print("Price of Anarchy (SW):", PoA_SW)
+print("Price of Stability (TH):", PoS_TH)
+print("Price of Anarchy (TH):", PoA_TH)
