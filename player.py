@@ -1,16 +1,17 @@
 from task import Task
 from uuid import uuid4
 
+
 class Player():
     # constructor
-    def __init__(self, assigned_tasks=[], effort_allocation=1, skills={"developer":1.0}):
+    def __init__(self, assigned_tasks=[], effort_allocation=1, skills={"developer": 1.0}):
         if effort_allocation < 1:
             raise ValueError("'effort_allocation' must be greater than 0")
         if len(skills) < 1:
             raise ValueError("'skills' cannot be empty")
 
         self.__assigned_tasks = assigned_tasks
-        self.__effort_allocation = effort_allocation 
+        self.__effort_allocation = effort_allocation
         self.__skills = skills
 
         # TODO: are we wanting this to get auto-generated or passed in? leaving auto for now
@@ -40,6 +41,9 @@ class Player():
 
     def get_remaining_effort(self):
         return self.__effort_allocation - self.__effort_expended
-    
+
     def get_effort_report(self):
         return self.__daily_effort_report
+
+    def get_effort_allocation(self):
+        return self.__effort_allocation
