@@ -86,10 +86,10 @@ def run_simulation(args):
     ideal_SW = calculate_ideal_social_welfare(players, tasks)
 
     # Normalize and calculate PoS and PoA
-    PoS_SW = ideal_SW / best_SW if best_SW
-    PoA_SW = ideal_SW / worst_SW if worst_SW
-    PoS_TH = ideal_SW / best_TH if best_TH
-    PoA_TH = ideal_SW / worst_TH if worst_TH
+    PoS_SW = ideal_SW / best_SW 
+    PoA_SW = ideal_SW / worst_SW 
+    PoS_TH = ideal_SW / best_TH 
+    PoA_TH = ideal_SW / worst_TH
 
     return {
         "Team Size (n)": n,
